@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/background"
+    android:gravity="center"
+    android:padding="20dp">
+
+    <TextView 
+        android:id="@+id/characters"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+    	android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:paddingBottom="50dp"
+        android:text="Personnages"/>
+    
+    <TextView 
+        android:id="@+id/newcharacter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+    	android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:paddingBottom="50dp"
+        android:text="Nouveau personnage"/>
+    
+</LinearLayout>

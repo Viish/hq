@@ -14,3 +14,11 @@ gen/
 
 # Local configuration file (sdk path, etc)
 local.properties
+
+#images
+assets/*.jpg
+assets/*.gif
+assets/*.png
+assets/Objets/*.gif
+assets/Capacites/*.gif
+assets/Capacites/*.png
