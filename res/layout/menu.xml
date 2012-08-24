@@ -7,24 +7,23 @@
     android:gravity="center"
     android:padding="20dp">
 
-    <TextView 
+    <ListView 
         android:id="@+id/characters"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="0.1"
         android:textColor="@android:color/black"
     	android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:paddingBottom="50dp"
-        android:text="Personnages"/>
+        android:textAppearance="?android:attr/textAppearanceLarge"/>
     
     <TextView 
         android:id="@+id/newcharacter"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
         android:textColor="@android:color/black"
     	android:gravity="center"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:paddingBottom="50dp"
         android:text="Nouveau personnage"/>
     
 </LinearLayout>

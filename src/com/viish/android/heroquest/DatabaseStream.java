@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
 public class DatabaseStream 
 {
@@ -368,7 +367,7 @@ public class DatabaseStream
 	}
 	
 	public Object getCapacity(String capacityName, int level) {
-		Cursor cursor = stream.query("ClassCapacities", null, "Name LIKE \"" + capacityName + "\"", null, null, null, null);
+		Cursor cursor = stream.query("ClassCapacities", null, "Name LIKE \"" + capacityName + "\"", null, null, null, "Name ASC");
 		if (cursor != null && cursor.move(1)) {
 			int indexDesc = cursor.getColumnIndex("Desc");
 			int indexCost = cursor.getColumnIndex("Cost");
@@ -386,7 +385,6 @@ public class DatabaseStream
 		      
 			try
 			{
-				Log.e("DEBUG", "Try = " + capacityName);
 		        Bitmap bitmap = BitmapFactory.decodeStream(this.context.getResources().getAssets().open("Capacites/" + icon.toLowerCase().replace(" ", "_") + ".gif"));
 				ItemOrCapacity capacity = new ItemOrCapacity(capacityName, desc + "\n" + descCumul, cumulable, cost, level, bitmap, icon);
 				capacity.setClasse(classe);
@@ -402,7 +400,6 @@ public class DatabaseStream
 			cursor.close();
 			return capacity;
 		}
-		Log.e("DEBUG", "GOTCHA = " + capacityName);
 		return null;
 	}
 
@@ -413,7 +410,7 @@ public class DatabaseStream
 	public ArrayList<Object> getClassCapacities(String classe) {
 		ArrayList<Object> capacities = new ArrayList<Object>();
 		
-		Cursor cursor = this.stream.query("ClassCapacities", null, "Class LIKE \"" + classe + "\"", null, null, null, "id ASC");
+		Cursor cursor = this.stream.query("ClassCapacities", null, "Class LIKE \"" + classe + "\"", null, null, null, "Name ASC");
 		if (cursor != null) {
 		    int indexCapacity = cursor.getColumnIndex("Name");
 			

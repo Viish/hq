@@ -4,30 +4,37 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.TextView;
 
-public class Characters extends ListActivity implements OnItemClickListener, OnItemLongClickListener 
+public class Characters extends Activity implements OnClickListener, OnItemClickListener, OnItemLongClickListener 
 {	
 	private  ArrayList<Object> characters;
 	private String icon = "";
 	private String characterSelected = "";
 	private Typeface typeface;
+	private ListView lv;
 	
-    @SuppressWarnings("deprecation")
 	public void onCreate(Bundle savedInstanceState) 
     {
     	Typeface tempTF = Typeface.createFromAsset(getAssets(), "HeroQuest.ttf");
@@ -35,14 +42,21 @@ public class Characters extends ListActivity implements OnItemClickListener, OnI
         
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.menu);
+        
+        lv = (ListView) findViewById(R.id.characters);
+        lv.setOnItemClickListener(this);	
+        lv.setOnItemLongClickListener(this);
         
         updateList();
         
-        getListView().setOnItemClickListener(this);	
-        getListView().setOnItemLongClickListener(this);
-        
-        getListView().setBackgroundDrawable(getResources().getDrawable(R.drawable.background));
+        initMenuItem((TextView) findViewById(R.id.newcharacter));
     }
+	
+	private void initMenuItem(TextView menu) {
+		menu.setOnClickListener(this);
+		menu.setTypeface(typeface);
+	}
 
 	private void updateList() 
 	{
@@ -50,7 +64,7 @@ public class Characters extends ListActivity implements OnItemClickListener, OnI
         characters = dbs.getCharacters();
         dbs.close();
         
-        getListView().setAdapter(new HQAdapter(this, typeface, R.layout.row, characters, "Character", false, true));		
+        lv.setAdapter(new HQAdapter(this, typeface, R.layout.row, characters, "Character", false, true));		
 	}
 
 	public void onItemClick(AdapterView<?> parent, View v, int position, long id) 
@@ -59,6 +73,98 @@ public class Characters extends ListActivity implements OnItemClickListener, OnI
 		Intent i = new Intent(this, Sheet.class);
 		i.putExtra("Character", character);
 		startActivityForResult(i, 0x1515);
+	}
+	
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {			
+		case R.id.newcharacter:
+			AlertDialog.Builder alert = new AlertDialog.Builder(this);
+			final Context context = this;
+			
+			alert.setTitle("Nouveau Personnage");
+			
+			LinearLayout ll = new LinearLayout(this);
+			ll.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+			ll.setOrientation(LinearLayout.VERTICAL);
+			final EditText etName = new EditText(this);
+			etName.setHint("Nom du nouveau Héro ?");
+			alert.setView(etName);
+			ll.addView(etName);
+			
+			String[] classes = {"Assassin", "Barbare", "Mage", "Voleur", "Necromancien", "Moine", "Skaven", "Rodeur", "Pretre", "Ogre", "Barde", "Hobbit"};
+			final Spinner classe = new Spinner(this);
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, classes);
+			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			classe.setAdapter(adapter);
+			ll.addView(classe);
+			Button bIcon = new Button(this);
+			bIcon.setText("Icon");
+			bIcon.setOnClickListener(new View.OnClickListener() 
+			{
+				public void onClick(View v) 
+				{
+					Intent i = new Intent(context, Icons.class);
+					i.putExtra("Path", "");
+					startActivityForResult(i, 0x1989);
+				}
+			});
+			ll.addView(bIcon);
+			
+			alert.setView(ll);
+			
+			alert.setPositiveButton("Créer", new DialogInterface.OnClickListener()
+			{
+				public void onClick(DialogInterface dialog, int which) 
+				{
+					String newHeroName = etName.getText().toString();
+					DatabaseStream dbs = new DatabaseStream(context);
+					dbs.createHero(newHeroName, (String) classe.getSelectedItem(), icon);
+					if (((String) classe.getSelectedItem()).equals("Necromancien"))
+					{
+						dbs.addCapacity("Maîtrise de la Nécromancie", newHeroName);
+					}
+					else if (((String) classe.getSelectedItem()).equals("Skaven"))
+					{
+						dbs.addCapacity("Skaven", newHeroName);
+					}
+					else if (((String) classe.getSelectedItem()).equals("Moine"))
+					{
+						dbs.addCapacity("Moine", newHeroName);
+					}
+					else if (((String) classe.getSelectedItem()).equals("Barde"))
+					{
+						dbs.addCapacity("Barde", newHeroName);
+						dbs.addItem("Triangle", newHeroName);
+					}
+					else if (((String) classe.getSelectedItem()).equals("Hobbit"))
+					{
+						dbs.addCapacity("Hobbit", newHeroName);
+					}
+					else if (((String) classe.getSelectedItem()).equals("Ogre"))
+					{
+						dbs.addCapacity("Ogre", newHeroName);
+						dbs.addCapacity("Monstre", newHeroName);
+						dbs.addCapacity("Chienchien", newHeroName);
+						dbs.addCapacity("Peau Résistante", newHeroName);
+						dbs.addCapacity("Gros débile", newHeroName);
+						dbs.addCapacity("Affamé", newHeroName);
+						dbs.addCapacity("Démarche Chaloupée", newHeroName);
+						dbs.addCapacity("Acharnement", newHeroName);
+						dbs.addCapacity("Vous ne passerez pas !", newHeroName);
+						dbs.addCapacity("Pagne sans poche", newHeroName);
+						dbs.addCapacity("Olvo Zlatoum PamPam", newHeroName);
+						dbs.addCapacity("Charogne", newHeroName);
+						dbs.addItem("Tronc", newHeroName);
+					}
+					dbs.close();
+			        updateList();
+				}
+			});
+			
+			alert.show();
+			break;
+		}
 	}
 
 	public boolean onItemLongClick(AdapterView<?> av, View v, int position, long id) 
@@ -81,7 +187,7 @@ public class Characters extends ListActivity implements OnItemClickListener, OnI
 		et.setHint("Nouveau nom du Héro ?");
 		alert.setView(et);
 		
-		alert.setPositiveButton("Rename", new OnClickListener()
+		alert.setPositiveButton("Rename", new DialogInterface.OnClickListener()
 		{
 			public void onClick(DialogInterface dialog, int which) 
 			{
@@ -93,7 +199,7 @@ public class Characters extends ListActivity implements OnItemClickListener, OnI
 			}
 		});
 		
-		alert.setNeutralButton("Icon", new OnClickListener() 
+		alert.setNeutralButton("Icon", new DialogInterface.OnClickListener() 
 		{
 			public void onClick(DialogInterface dialog, int which) 
 			{
@@ -104,7 +210,7 @@ public class Characters extends ListActivity implements OnItemClickListener, OnI
 			}
 		});
 		
-		alert.setNegativeButton("Delete", new OnClickListener()
+		alert.setNegativeButton("Delete", new DialogInterface.OnClickListener()
 		{
 			public void onClick(DialogInterface dialog, int which) 
 			{

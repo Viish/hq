@@ -109,7 +109,6 @@ public class HQAdapter extends ArrayAdapter<Object>
     	{
     		tt.setText(s1);
     		tt.setTextSize(15);
-    		tt.setTextColor(Color.GREEN);
         }
     	if (bt != null)
     	{
@@ -118,7 +117,6 @@ public class HQAdapter extends ArrayAdapter<Object>
         }
     	if (p != null)
     	{
-    		p.setTextColor(Color.YELLOW);
     		p.setText(s3);
     	}
     	

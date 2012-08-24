@@ -17,7 +17,7 @@
             android:id="@+id/Name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
+            android:textColor="@color/color_name"
             android:layout_weight="1"
             android:gravity="center_vertical"
         />
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_vertical"
-        	android:textColor="@android:color/black"
+        	android:textColor="@color/color_price_or_level"
         />
         
         <TextView

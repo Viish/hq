@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="color_name">#0000FF</color>
+    <color name="color_price_or_level">#FF0000</color>
+</resources>
