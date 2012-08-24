@@ -37,15 +37,32 @@ public class DatabaseStream
 	    {
 	    	int i = cursor.getInt(cursor.getColumnIndex("Amount"));
 	    	contentValues.put("Amount", Integer.valueOf(i + 1));
+		    
+		    stream.update("HeroesItems", contentValues, "HeroName LIKE \"" + heroName + "\" AND ItemName LIKE \"" + itemName + "\"", null);
 	    } else {
-	    	contentValues.put("Amount", Integer.valueOf(0));
+	    	contentValues.put("ItemName", itemName);
+	    	contentValues.put("HeroName", heroName);
+	    	contentValues.put("Amount", Integer.valueOf(1));
+		    
+		    stream.insert("HeroesItems", null, contentValues);
 	    }
-	    
-	    stream.update("HeroesItems", contentValues, "HeroName LIKE \"" + heroName + "\" AND ItemName LIKE \"" + itemName + "\"", null);
 	}
 
-	public void removeItem(String itemName, String name) {
-		//TODO
+	public void removeItem(String itemName, String heroName) {
+		Cursor cursor = this.stream.query("HeroesItems", null, "HeroName LIKE \"" + heroName + "\" AND ItemName LIKE \"" + itemName + "\"", null, null, null, null);
+	    if (cursor != null && cursor.move(1)) {
+	    	int indexAmount = cursor.getColumnIndex("Amount");
+	    	int amount = cursor.getInt(indexAmount);
+	    	
+	    	if (amount > 1) {
+	    		ContentValues contentValues = new ContentValues();
+	    	    contentValues.put("Amount", Integer.valueOf(amount - 1));
+	    	    
+		    	stream.update("HeroesItems", contentValues, "HeroName LIKE \"" + heroName + "\" AND ItemName LIKE \"" + itemName + "\"", null);
+	    	} else {
+		    	stream.delete("HeroesItems", "HeroName LIKE \"" + heroName + "\" AND ItemName LIKE \"" + itemName + "\"", null);
+	    	}
+	    }
 	}
 
 	public void deleteItem(String itemName, String name) {
@@ -403,8 +420,23 @@ public class DatabaseStream
 		return null;
 	}
 
-	public void removeCapacity(String capacityName, String heroName) {
-		//TODO
+	public void removeCapacity(String capacityName, String heroName) {	    
+	    Cursor cursor = this.stream.query("HeroesCapacities", null, "HeroName LIKE \"" + heroName + "\" AND CapacityName LIKE \"" + capacityName + "\"", null, null, null, null);
+	    if (cursor != null && cursor.move(1)) {
+	    	int indexLevel = cursor.getColumnIndex("Level");
+	    	int level = cursor.getInt(indexLevel);
+	    	
+	    	if (level > 1) {
+	    		ContentValues contentValues = new ContentValues();
+	    	    contentValues.put("HeroName", heroName);
+	    	    contentValues.put("CapacityName", capacityName);
+	    	    contentValues.put("Level", Integer.valueOf(level - 1));
+	    	    
+		    	stream.update("HeroesCapacities", contentValues, "HeroName LIKE \"" + heroName + "\" AND CapacityName LIKE \"" + capacityName + "\"", null);
+	    	} else {
+		    	stream.delete("HeroesCapacities", "HeroName LIKE \"" + heroName + "\" AND CapacityName LIKE \"" + capacityName + "\"", null);
+	    	}
+	    }
 	}
 
 	public ArrayList<Object> getClassCapacities(String classe) {
