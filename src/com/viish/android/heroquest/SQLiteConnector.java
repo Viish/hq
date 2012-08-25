@@ -15,9 +15,10 @@ class SQLiteConnector extends SQLiteOpenHelper
   {
     if (createTables)
     {
-    	database.execSQL("CREATE TABLE Characters (HeroName TEXT PRIMARY KEY NOT NULL, Class TEXT, Avatar TEXT, Level FLOAT, Corps NUMBER, Esprit NUMBER, Courage NUMBER, PO NUMBER, Wood NUMBER, Cola NUMBER)");
+    	database.execSQL("CREATE TABLE Characters (HeroName TEXT PRIMARY KEY NOT NULL, Class TEXT, Race TEXT, Avatar TEXT, Level FLOAT, Corps NUMBER, Esprit NUMBER, Courage NUMBER, PO NUMBER)");
     	database.execSQL("CREATE TABLE HeroesItems (HeroName TEXT NOT NULL, ItemName TEXT NOT NULL, Amount NUMBER, PRIMARY KEY(HeroName, ItemName))");
     	database.execSQL("CREATE TABLE HeroesCapacities (HeroName TEXT NOT NULL, CapacityName TEXT NOT NULL, Level NUMBER, PRIMARY KEY(HeroName, CapacityName))");
+    	database.execSQL("CREATE TABLE HeroesNotes (HeroName TEXT NOT NULL PRIMARY KEY, Note TEXT NOT NULL)");
     }
     database.execSQL("CREATE TABLE ClassCapacities (Id NUMBER NOT NULL, Name TEXT NOT NULL, Class TEXT, Desc TEXT, Cost TEXT, Cumulable NUMBER, DescCumul TEXT, Icon TEXT, PRIMARY KEY (Id, Class))");
     database.execSQL("INSERT INTO ClassCapacities VALUES(0, \"Maîtrise des couteaux\", \"All\", \"Permet d'utiliser le couteau, le poignard, le kunai, la dague, le katar, la main gauche et la mort subite.\", \"\", 0, \"\", \"Maitrise Couteau\")");
@@ -63,7 +64,7 @@ class SQLiteConnector extends SQLiteOpenHelper
     database.execSQL("INSERT INTO ClassCapacities VALUES(10, \"Tornade d'acier\", \"Voleur\", \"Choisissez une cible. Elle et vous lancez vos DM. Si votre score est plus gros, vous pouvez l'attaquez 2 fois ce tour-ci.\", \"\", 0, \"\", \"Tornade 2\")");
     database.execSQL("INSERT INTO ClassCapacities VALUES(11, \"Contrat\", \"Voleur\", \"Le Sorcier vous confie une mission annexe en début de partie.\nSi vous la réussissez, un bonus vous est accordé.\nToute divulgation de votre mission à vos coéquipiers entraîne l'échec de la mission.\", \"\", 0, \"\", \"Contrat\")");
     database.execSQL("INSERT INTO ClassCapacities VALUES(12, \"Combat déloyal\", \"Voleur\", \"La cible perd 3DD jusqu'à votre prochain tour.\nVous pouvez l'attaquer de suite.\", \"PSY 14\", 0, \"\", \"Combat deloyal\")");
-    database.execSQL("INSERT INTO ClassCapacities VALUES(13, \"Charisme\", \"Voleur\", \"A la place d'attaquer, choisissez un monstre. Lancez 1DA. Sur un bouclier monstre, votre cible se retire du champ de bataille.\", \"\", 0, \"\", \"Charisme\")");
+    database.execSQL("INSERT INTO ClassCapacities VALUES(13, \"Présence\", \"Voleur\", \"A la place d'attaquer, choisissez un monstre. Lancez 1DA. Sur un bouclier monstre, votre cible se retire du champ de bataille.\", \"\", 0, \"\", \"Charisme\")");
     database.execSQL("INSERT INTO ClassCapacities VALUES(14, \"Escroc\", \"Voleur\", \"Vous pouvez revendre vos objets au prix fort.\", \"\", 0, \"\", \"Escroc\")");
     database.execSQL("INSERT INTO ClassCapacities VALUES(15, \"Agile\", \"Voleur\", \"Si vous ne vous déplacez pas, vous gagnez 1DD jusqu'à votre prochain tour.\", \"\", 0, \"\", \"Chant du barde\")");
     database.execSQL("INSERT INTO ClassCapacities VALUES(16, \"Vol à la tire\", \"Voleur\", \"Vous permet de gagner des PO, proportionnellement au niveau du monstre. Si la cible est un joueur, l'argent  est pris sur sa réserve.\", \"PSY 8 + niveau cible\", 0, \"\", \"Vol\")");
@@ -86,7 +87,7 @@ class SQLiteConnector extends SQLiteOpenHelper
     database.execSQL("INSERT INTO ClassCapacities VALUES(14, \"Métamorphe\", \"Mage\", \"Au début de votre tour, vous pouvez choisir de vous transformer en monstre (déterminé aléatoirement).\", \"\", 0, \"\", \"Metamorphe\")");
     database.execSQL("INSERT INTO ClassCapacities VALUES(15, \"Télékinesie\", \"Mage\", \"Vous pouvez déplacer une cible tant qu'elle reste visible.\nRemplace votre déplacement.\", \"\", 0, \"\", \"Telekinesie\")");
     database.execSQL("INSERT INTO ClassCapacities VALUES(16, \"Aura effrayante\", \"Mage\", \"Chaque cible au CaC avec vous se déplace de 2 cases. Au prochain tour de chacune d'entre elles, elle doit réussir un test PSY 8 pour ne pas être étourdie.\nNe fonctionne pas sur les morts-vivants.\", \"PSY 12\", 0, \"\", \"Aura effrayante\")");
-    database.execSQL("INSERT INTO ClassCapacities VALUES(17, \"Régénération\", \"Mage\", \"Si vous avez au moins 1DD, perdez 1DD jusqu'à la fin de la partie pour gagner 3 points de Corps.\", \"\", 0, \"\", \"Regeneration\")");
+    database.execSQL("INSERT INTO ClassCapacities VALUES(17, \"Régen\", \"Mage\", \"Si vous avez au moins 1DD, perdez 1DD jusqu'à la fin de la partie pour gagner 3 points de Corps.\", \"\", 0, \"\", \"Regeneration\")");
     database.execSQL("INSERT INTO ClassCapacities VALUES(18, \"Soin\", \"Mage\", \"Payez X points d'Esprit. La cible visible récupère 2X points de Corps.\", \"\", 0, \"\", \"Soin 2\")");
     database.execSQL("INSERT INTO ClassCapacities VALUES(19, \"Saoul\", \"Mage\", \"Action aléatoire, pour le meilleur comme pour le pire.\", \"\", 0, \"\", \"Saoul\")");
     database.execSQL("INSERT INTO ClassCapacities VALUES(0, \"Survie\", \"Barbare\", \"Si vous avez perdu 2/3 de vos points de Corps, gagnez 1DA pour chaque attaque de votre main directrice.\", \"\", 0, \"\", \"Survie\")");
@@ -114,7 +115,7 @@ class SQLiteConnector extends SQLiteOpenHelper
     database.execSQL("INSERT INTO ClassCapacities VALUES(2, \"Détection des points faibles\", \"Assassin\", \"Remplace le déplacement de ce tour-ci.\nLancez vos dés de mouvement. Si vous dépassez (strictement) la valeur de déplacment de la cible, téléportez vous sur la case derrière votre cible si disponible.\", \"\", 0, \"\", \"points faibles\")");
     database.execSQL("INSERT INTO ClassCapacities VALUES(3, \"Coup précis\", \"Assassin\", \"Inflige 1 + X blessures à une cible au CaC.\", \"PSY 13 + 2X\", 0, \"\", \"precision\")");
     database.execSQL("INSERT INTO ClassCapacities VALUES(4, \"Effacement de présence\", \"Assassin\", \"Après avoir tué de vos mains une cible, vous devenez invisible jusqu'à votre prochaine attaque.\", \"PSY 14\", 0, \"\", \"effacement de presence\")");
-    database.execSQL("INSERT INTO ClassCapacities VALUES(5, \"Piàge\", \"Assassin\", \"Pose un piège sur une case.\n Sur un crâne : la cible se prend 1 blessure.\nSur un bouclier : rien ne se passe.\nSur un bouclier monstre : elle est étourdie.\", \"\", 0, \"\", \"piege\")");
+    database.execSQL("INSERT INTO ClassCapacities VALUES(5, \"Piège\", \"Assassin\", \"Pose un piège sur une case.\n Sur un crâne : la cible se prend 1 blessure.\nSur un bouclier : rien ne se passe.\nSur un bouclier monstre : elle est étourdie.\", \"\", 0, \"\", \"piege\")");
     database.execSQL("INSERT INTO ClassCapacities VALUES(6, \"Bombe artisanale\", \"Assassin\", \"Inflige 1 blessure à une cible située à exactement X cases de distance, X étant la valeur du jet moins votre Esprit.\", \"PSY X\", 0, \"\", \"bombe\")");
     database.execSQL("INSERT INTO ClassCapacities VALUES(7, \"Esquive\", \"Assassin\", \"Lors d'un jet de défense, si vous obtenez un bouclier monstre, vous pouvez reculer de 1 case.\nVous prenez tout de même les blessures si il y en a.\", \"\", 0, \"\", \"deplacement rapide\")");
     database.execSQL("INSERT INTO ClassCapacities VALUES(8, \"Volonté de survivre\", \"Assassin\", \"Si vous subissez des dommages mortels, activez cette capacité. Vous restez en vie avec 1 point de Corps.\nConsomme 1 point d'Esprit jusqu'à la fin de la partie.\", \"PSY 13\", 0, \"\", \"volonte de survivre\")");
@@ -192,6 +193,11 @@ class SQLiteConnector extends SQLiteOpenHelper
     database.execSQL("INSERT INTO ClassCapacities VALUES(17, \"Naturaliste\", \"Rodeur\", \"Vous ne pouvez porter d'armure.\n+4 points de Corps.\", \"\", 0, \"\", \"naturaliste\")");
     database.execSQL("INSERT INTO ClassCapacities VALUES(18, \"Protection naturelle\", \"Rodeur\", \"Si vous n'êtes pas équipe d'une arme faisant des dommages supérieurs à 2DA, +1DD.\", \"\", 0, \"\", \"protection\")");
     database.execSQL("INSERT INTO ClassCapacities VALUES(19, \"Tir d'aigle\", \"Rodeur\", \"Vous pouvez atteindre les cibles cachées.\", \"\", 0, \"\", \"aigle\")");
+    database.execSQL("INSERT INTO ClassCapacities VALUES(20, \"Sorceleur\", \"Rodeur\", \"Les effets des potions que vous buvez durent plus longtemps.\", \"\", 0, \"\", \"aigle\")");
+    database.execSQL("INSERT INTO ClassCapacities VALUES(21, \"Mutant\", \"Rodeur\", \"Vos potions sont plus efficaces.\", \"\", 0, \"\", \"aigle\")");
+    database.execSQL("INSERT INTO ClassCapacities VALUES(22, \"Minutieux\", \"Rodeur\", \"Diminue la difficulté des potions de 2.\", \"\", 0, \"\", \"aigle\")");
+    database.execSQL("INSERT INTO ClassCapacities VALUES(23, \"Bestiaire\", \"Rodeur\", \"Apprenez les compétences spéciales des monstres/personnages que vous affrontez.\", \"\", 0, \"\", \"aigle\")");
+    database.execSQL("INSERT INTO ClassCapacities VALUES(24, \"Chasseur\", \"Rodeur\", \"+1DA quand vous utilisez un Arc.\", \"\", 0, \"\", \"aigle\")");
     database.execSQL("INSERT INTO ClassCapacities VALUES(0, \"Soigner\", \"Pretre\", \"Redonne 1 Corps à vous ou à un allié.\nSi le joueur sort un double lors du test, il perd sa capacité de guérison jusqu'à la fin de la partie.\", \"PSY 13\", 0, \"\", \"Soin 3\")");
     database.execSQL("INSERT INTO ClassCapacities VALUES(1, \"Bouclier sprirituel\", \"Pretre\", \"Protège vous ou un allié de 1 dommage sur la prochaine attaque magique subie.\", \"PSY 13\", 0, \"\", \"Bouclier\")");
     database.execSQL("INSERT INTO ClassCapacities VALUES(2, \"Exil des morts\", \"Pretre\", \"Inflige X blessures à un mort vivant visible.\", \"PSY 13 + X\", 0, \"\", \"Exil\")");

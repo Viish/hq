@@ -29,11 +29,15 @@ import android.widget.TextView;
 
 public class Characters extends Activity implements OnClickListener, OnItemClickListener, OnItemLongClickListener 
 {	
+	private static final String[] races = {"Humain", "Elfe", "Drow", "Nain", "Orc", "Goblin", "Gnome", "Fée", "Demi-Elfe", "Demi-Drow", "Demi-Nain", "Demi-Orc", "Skaven", "Ogre"};
+	private static final String[] classes = {"Assassin", "Barbare", "Mage", "Voleur", "Necromancien", "Moine", "Skaven", "Rodeur", "Pretre", "Ogre", "Barde", "Hobbit"};
+	
 	private  ArrayList<Object> characters;
 	private String icon = "";
 	private String characterSelected = "";
 	private Typeface typeface;
 	private ListView lv;
+	private Spinner classe, race;
 	
 	public void onCreate(Bundle savedInstanceState) 
     {
@@ -92,12 +96,18 @@ public class Characters extends Activity implements OnClickListener, OnItemClick
 			alert.setView(etName);
 			ll.addView(etName);
 			
-			String[] classes = {"Assassin", "Barbare", "Mage", "Voleur", "Necromancien", "Moine", "Skaven", "Rodeur", "Pretre", "Ogre", "Barde", "Hobbit"};
-			final Spinner classe = new Spinner(this);
+			classe = new Spinner(this);
 			ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, classes);
 			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			classe.setAdapter(adapter);
 			ll.addView(classe);
+			
+			race = new Spinner(this);
+			adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, races);
+			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			race.setAdapter(adapter);
+			ll.addView(race);
+			
 			Button bIcon = new Button(this);
 			bIcon.setText("Icon");
 			bIcon.setOnClickListener(new View.OnClickListener() 
@@ -119,7 +129,7 @@ public class Characters extends Activity implements OnClickListener, OnItemClick
 				{
 					String newHeroName = etName.getText().toString();
 					DatabaseStream dbs = new DatabaseStream(context);
-					dbs.createHero(newHeroName, (String) classe.getSelectedItem(), icon);
+					dbs.createHero(newHeroName, (String) classe.getSelectedItem(), (String) race.getSelectedItem(), icon);
 					if (((String) classe.getSelectedItem()).equals("Necromancien"))
 					{
 						dbs.addCapacity("Maîtrise de la Nécromancie", newHeroName);

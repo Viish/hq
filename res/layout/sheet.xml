@@ -1,40 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:id="@+id/MainLayout"
     android:padding="20dp"
     android:background="@drawable/background">
     
     <!-- Bandeau supérieur -->
-    <LinearLayout
-	    android:orientation="horizontal"
+    <RelativeLayout
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:id="@+id/Stats">
+	    
 	    <LinearLayout
-		    android:orientation="vertical"
-		    android:layout_width="fill_parent"
-		    android:layout_height="fill_parent">
-		    	<LinearLayout
-		    		android:orientation="vertical"
-				    android:layout_width="wrap_content"
-				    android:layout_height="fill_parent"
-				    android:gravity="center">
-			    	<ImageView
-			    		android:layout_width="wrap_content"
-			    		android:layout_height="wrap_content"
-			    		android:id="@+id/Avatar">
-			    	</ImageView>
-		    	</LinearLayout>
-		</LinearLayout>
-	    <LinearLayout
+	        android:id="@+id/AvatarLayout"
+	        android:layout_alignParentLeft="true"
+	        android:layout_centerVertical="true"
 		    android:orientation="vertical"
 		    android:layout_width="wrap_content"
-		    android:layout_height="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:gravity="center">
+				    
+	    	<ImageView
+	    	    android:id="@+id/Avatar"
+	    	    android:layout_width="wrap_content"
+	    	    android:layout_height="wrap_content"
+	    	    android:adjustViewBounds="true"
+	    	    android:src="@drawable/sample" >
+
+	    	</ImageView>
+	    	
+		</LinearLayout>
+		
+	    <LinearLayout
+	        android:id="@+id/TextLayout"
+		    android:orientation="vertical"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+	        android:layout_toRightOf="@id/AvatarLayout"
+	        android:layout_centerVertical="true"
 		    android:paddingLeft="10dp"
 		    android:gravity="left">
+		    	
 	    	<TextView
 	    		android:text="Name"
 	    		android:layout_width="wrap_content"
@@ -43,6 +51,7 @@
 	    		android:textSize="18dp"
 	    		android:id="@+id/Name">
 	    	</TextView>
+	    	
 	    	<TextView
 	    		android:text="Classe"
 	    		android:layout_width="wrap_content"
@@ -51,46 +60,40 @@
             	android:textColor="@android:color/black"
 	    		android:id="@+id/Classe">
 	    	</TextView>
+	    	
+	    	<TextView
+	    		android:text="Race"
+	    		android:layout_width="wrap_content"
+	    		android:layout_height="wrap_content"
+	    		android:textSize="16dp"
+            	android:textColor="@android:color/black"
+	    		android:id="@+id/Race">
+	    	</TextView>
+	    	
 	    	<TextView
 	    		android:text="Level"
 	    		android:layout_width="wrap_content"
 	    		android:layout_height="wrap_content"
-            	android:textColor="@android:color/black"
+            	android:textColor="@color/color_price_or_level"
 	    		android:id="@+id/Level">
 	    	</TextView>
-	   		<LinearLayout
-		   		android:layout_width="wrap_content"
-		   		android:layout_height="wrap_content"
-		   		android:orientation="horizontal">
-	    	</LinearLayout>
+	    	
 		</LinearLayout>
-		<LinearLayout
-		    android:orientation="vertical"
-		    android:layout_width="fill_parent"
-		    android:layout_height="fill_parent"
-		    android:layout_gravity="right|top"
-		    android:paddingLeft="10dp">
-	    	<LinearLayout
-		    	android:orientation="horizontal"
-			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-			    android:layout_gravity="right|top"
-		    	android:gravity="right|top">
-			    <Button android:text="+ " android:drawableRight="@drawable/courage" android:id="@+id/bCourageP" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
-			    <Button android:text="- " android:drawableRight="@drawable/courage" android:id="@+id/bCourageM" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
-	    	</LinearLayout>  
-	    </LinearLayout>
-    </LinearLayout>
+	    
+    </RelativeLayout>
+    
     <LinearLayout
    		android:layout_width="wrap_content"
    		android:layout_height="wrap_content"
    		android:orientation="horizontal"
     	android:gravity="center">
+		
   		<ImageView
     		android:layout_width="wrap_content"
     		android:layout_height="wrap_content"
     		android:background="@drawable/esprit">
    		</ImageView>
+   		
     	<TextView
     		android:text="Esprit"
     		android:layout_width="wrap_content"
@@ -99,11 +102,13 @@
     		android:textSize="14dp"
     		android:id="@+id/Esprit">
     	</TextView>
+    	
    		<ImageView
     		android:layout_width="wrap_content"
     		android:layout_height="wrap_content"
     		android:background="@drawable/corps">
     	</ImageView>
+    	
     	<TextView
     		android:text="Corps"
     		android:layout_width="wrap_content"
@@ -112,12 +117,14 @@
     		android:textSize="14dp"
     		android:id="@+id/Corps">
     	</TextView>
+    	
     	<ImageView
     		android:id="@+id/dPO"
     		android:layout_width="wrap_content"
     		android:layout_height="wrap_content"
     		android:background="@drawable/po">
    		</ImageView>
+   		
     	<TextView
     		android:text="PO"
     		android:layout_width="wrap_content"
@@ -126,12 +133,14 @@
     		android:textSize="14dp"
     		android:id="@+id/PO">
     	</TextView>
+    	
     	<ImageView
     		android:id="@+id/dCourage"
     		android:layout_width="wrap_content"
     		android:layout_height="wrap_content"
     		android:background="@drawable/courage">
    		</ImageView>
+   		
     	<TextView
     		android:layout_width="wrap_content"
     		android:layout_height="wrap_content"
@@ -139,53 +148,114 @@
     		android:textSize="14dp"
     		android:id="@+id/Courage">
     	</TextView>
+    	
 	</LinearLayout>
     
     <!-- Objets & Capacités -->
     <TabHost
-	android:id="@android:id/tabhost"
-    android:layout_weight="1"
-	android:layout_height="0dp"
-	android:layout_width="fill_parent">
+		android:id="@android:id/tabhost"
+	    android:layout_weight="1"
+		android:layout_height="0dp"
+		android:layout_width="match_parent">
+    	
 	    <LinearLayout
 	        android:orientation="vertical"
-	        android:layout_width="fill_parent"
-	        android:layout_height="fill_parent">
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent">
+	    	
 	        <TabWidget
 	            android:id="@android:id/tabs"
-	            android:layout_width="fill_parent"
+	            android:layout_width="match_parent"
 	            android:layout_height="wrap_content" />
+	        
 	        <FrameLayout
 	            android:id="@android:id/tabcontent"
-	            android:layout_width="fill_parent"
-	            android:layout_height="fill_parent">
+	            android:layout_width="match_parent"
+	            android:layout_height="match_parent">
+			    
 	            <ListView
-		            android:layout_width="fill_parent"
-		            android:layout_height="fill_parent"
+		            android:layout_width="match_parent"
+		            android:layout_height="match_parent"
 		            android:id="@+id/Items"/>
+	            
 		        <ListView
-		            android:layout_width="fill_parent"
-		            android:layout_height="fill_parent"
+		            android:layout_width="match_parent"
+		            android:layout_height="match_parent"
 		            android:id="@+id/Capacities"/>
-		        <TextView
-		            android:layout_width="fill_parent"
-		            android:layout_height="fill_parent"
+		        
+		        <TextView 
+		            android:layout_width="match_parent"
+		            android:layout_height="match_parent"
+           			android:textColor="@android:color/black"
 		            android:id="@+id/Notes"/>
+		        
 	        </FrameLayout>
+	        
 	    </LinearLayout>
+	    
 	</TabHost>
 	
-	<LinearLayout
-		android:orientation="horizontal"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:gravity="bottom|center_horizontal"
-	    android:layout_gravity="bottom|center_horizontal"
-	    android:id="@+id/buttons">
-	    	<Button android:text="+" android:drawableTop="@drawable/esprit" android:id="@+id/bEspritP" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
-		    <Button android:text="+" android:drawableTop="@drawable/corps" android:id="@+id/bCorpsP" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
-		    <Button android:text="-" android:drawableTop="@drawable/esprit" android:id="@+id/bEspritM" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
-		    <Button android:text="-" android:drawableTop="@drawable/corps" android:id="@+id/bCorpsM" android:layout_height="wrap_content" android:layout_width="wrap_content"/>
-	</LinearLayout>
-	
+    <ScrollView 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content">
+        
+		<LinearLayout
+			android:orientation="horizontal"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:gravity="bottom|center_horizontal"
+		    android:layout_gravity="bottom|center_horizontal"
+		    android:id="@+id/buttons">
+		    
+		    	<Button 
+		    	    android:text="+" 
+		    	    android:drawableTop="@drawable/esprit" 
+		    	    android:id="@+id/bEspritP" 
+		    	    android:layout_weight="1"
+		    	    android:layout_height="wrap_content" 
+		    	    android:layout_width="match_parent"/>
+			    
+			    <Button 
+			        android:text="+" 
+			        android:drawableTop="@drawable/corps" 
+			        android:id="@+id/bCorpsP" 
+		    	    android:layout_weight="1"
+			        android:layout_height="wrap_content" 
+			        android:layout_width="match_parent"/>
+			    
+			    <Button 
+			        android:text="-" 
+			        android:drawableTop="@drawable/esprit" 
+			        android:id="@+id/bEspritM" 
+		    	    android:layout_weight="1"
+			        android:layout_height="wrap_content" 
+			        android:layout_width="match_parent"/>
+			    
+			    <Button 
+			        android:text="-" 
+			        android:drawableTop="@drawable/corps" 
+			        android:id="@+id/bCorpsM" 
+		    	    android:layout_weight="1"
+			        android:layout_height="wrap_content" 
+			        android:layout_width="match_parent"/>
+		
+			    <Button
+			        android:id="@+id/bCourageP"
+		    	    android:layout_weight="1"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:drawableTop="@drawable/courage"
+			        android:text="+" />
+				    
+				<Button
+				    android:id="@+id/bCourageM"
+		    	    android:layout_weight="1"
+				    android:layout_width="match_parent"
+				    android:layout_height="wrap_content"
+				    android:drawableTop="@drawable/courage"
+				    android:text="-" />
+		    	
+		</LinearLayout>
+		
+	</ScrollView>
 </LinearLayout>

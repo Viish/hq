@@ -11,7 +11,7 @@ public enum Classes
 	Skaven, 
 	Moine, 
 	Rodeur, 
-	Pretre, 
+	Pretre { public String toString() { return "Prêtre"; }}, 
 	Ogre, 
 	Hobbit, 
 	Barde;

@@ -10,16 +10,26 @@ public class Character implements Serializable
 	private int po, esprit, corps, courage;
 	private double level;
 	private Classes classe;
+	private Races race;
 	
-	public Character(String name, Classes classe, double level, int po, int esprit, int corps, String avatar) 
+	public Character(String name, Classes classe, Races race, double level, int po, int esprit, int corps, String avatar) 
 	{
 		setName(name);
 		setClasse(classe);
+		setRace(race);
 		setLevel(level);
 		setPo(po);
 		setEsprit(esprit);
 		setCorps(corps);
 		setAvatar(avatar);		
+	}
+	
+	public void setRace(Races r) {
+		this.race = r;
+	}
+	
+	public Races getRace() {
+		return this.race;
 	}
 
 	public void setCourage(int c)

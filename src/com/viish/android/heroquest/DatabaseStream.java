@@ -19,7 +19,7 @@ public class DatabaseStream
 	public DatabaseStream(Context c)
 	{
 		context = c;
-		connector = new SQLiteConnector(context, "HeroQuest", 82);
+		connector = new SQLiteConnector(context, "HeroQuest", 86);
 		stream = connector.getWritableDatabase();
 	}
 	
@@ -170,15 +170,14 @@ public class DatabaseStream
 	    stream.insert("Items", null, contentValues);
 	}
 
-	public void createHero(String newHeroName, String classeName, String icon) {
+	public void createHero(String newHeroName, String classeName, String raceName, String icon) {
 		ContentValues contentValues = new ContentValues();
 	    contentValues.put("HeroName", newHeroName);
 	    contentValues.put("Avatar", icon);
 	    contentValues.put("Class", classeName);
+	    contentValues.put("Race", raceName);
 	    contentValues.put("Level", Integer.valueOf(1));
 	    contentValues.put("PO", Integer.valueOf(0));
-	    contentValues.put("Cola", Integer.valueOf(0));
-	    contentValues.put("Wood", Integer.valueOf(0));
 	    
 	    if (classeName.equals("Assassin"))
 	    {
@@ -215,6 +214,7 @@ public class DatabaseStream
 	        contentValues.put("Esprit", Integer.valueOf(4));
 	        contentValues.put("Corps", Integer.valueOf(4));
     	    contentValues.put("Courage", Integer.valueOf(0));
+    	    contentValues.put("Race", "Skaven");
 	    }
 	    else if (classeName.equals("Moine"))
 	    {
@@ -239,6 +239,7 @@ public class DatabaseStream
 	        contentValues.put("Esprit", Integer.valueOf(1));
 	        contentValues.put("Corps", Integer.valueOf(9));
     	    contentValues.put("Courage", Integer.valueOf(0));
+    	    contentValues.put("Race", "Ogre");
 	    }
 	    else if (classeName.equals("Barde"))
 	    {
@@ -253,6 +254,11 @@ public class DatabaseStream
 	    }
 	    
 	    stream.insert("Characters", null, contentValues);
+	    
+	    ContentValues emptyNote = new ContentValues();
+	    emptyNote.put("HeroName", newHeroName);
+	    emptyNote.put("Note", "");
+	    stream.insert("HeroesNotes", null, emptyNote);
 	}
 
 	public ArrayList<Object> getCharacters() {
@@ -262,6 +268,7 @@ public class DatabaseStream
 		if (cursor != null) {
 			int indexName = cursor.getColumnIndex("HeroName");
 		    int indexClass = cursor.getColumnIndex("Class");
+		    int indexRace = cursor.getColumnIndex("Race");
 		    int indexIcon = cursor.getColumnIndex("Avatar");
 		    int indexLevel = cursor.getColumnIndex("Level");
 		    int indexCorps = cursor.getColumnIndex("Corps");
@@ -277,8 +284,9 @@ public class DatabaseStream
 		    	int corps = cursor.getInt(indexCorps);
 		    	String icon = cursor.getString(indexIcon);
 		    	String classe = cursor.getString(indexClass);
+		    	String race = cursor.getString(indexRace);
 		    	
-		    	Character character = new Character(name, Classes.fromString(classe), level, po, esprit, corps, icon);
+		    	Character character = new Character(name, Classes.fromString(classe), Races.fromString(race), level, po, esprit, corps, icon);
 		    	if (classe.equals("Hobbit")) {
 		    		character.setCourage(cursor.getInt(indexCourage));
 		    	}
@@ -298,12 +306,14 @@ public class DatabaseStream
 	    stream.update("Characters", contentValues, "HeroName LIKE \"" + heroName + "\"", null);
 	    stream.update("HeroesItems", contentValues, "HeroName LIKE \"" + heroName + "\"", null);
 	    stream.update("HeroesCapacities", contentValues, "HeroName LIKE \"" + heroName + "\"", null);
+	    stream.update("HeroesNotes", contentValues, "HeroName LIKE \"" + heroName + "\"", null);
 	}
 
 	public void deleteHero(String heroName) {
 		stream.delete("Characters", "HeroName LIKE \"" + heroName + "\"", null);
 	    stream.delete("HeroesItems", "HeroName LIKE \"" + heroName + "\"", null);
 	    stream.delete("HeroesCapacities", "HeroName LIKE \"" + heroName + "\"", null);
+	    stream.delete("HeroesNotes", "HeroName LIKE \"" + heroName + "\"", null);
 	}
 
 	public void updateHero(String heroName, String valueToUpdate, int value) {
@@ -464,5 +474,19 @@ public class DatabaseStream
 	    contentValues.put("Cost", cost);
 	    
 	    stream.update("ClassCapacities", contentValues, "Name LIKE \"" + capacityName + "\"", null);
+	}
+
+	public String getHeroNote(String heroName) {
+		Cursor cursor = stream.query("HeroesNotes", null, "HeroName LIKE \"" + heroName + "\"", null, null, null, null);
+		if (cursor != null && cursor.move(1)) {
+			return cursor.getString(cursor.getColumnIndex("Note"));
+		}
+		return "";
+	}
+
+	public void modifyHeroNote(String heroName, String notes) {
+		ContentValues contentValues = new ContentValues();
+	    contentValues.put("Note", notes);
+	    stream.update("HeroesNotes", contentValues, "HeroName LIKE \"" + heroName + "\"", null);
 	}
 }

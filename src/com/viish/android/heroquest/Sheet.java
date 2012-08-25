@@ -30,13 +30,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
 @SuppressWarnings("deprecation")
-public class Sheet extends TabActivity implements OnItemClickListener
+public class Sheet extends TabActivity implements View.OnClickListener, OnItemClickListener
 {
 	private static final long ANIMATION_DURATION = 500;
 	
@@ -44,6 +45,8 @@ public class Sheet extends TabActivity implements OnItemClickListener
 	private Character character;
 	private ArrayList<Object> items, capacities;
 	private int espritTemp, corpsTemp;
+	private String notes;
+	private TextView notesTV;
 	private ListView capacitiesLV;
 	private ListView itemsLV;
 	private WakeLock wl;
@@ -93,7 +96,10 @@ public class Sheet extends TabActivity implements OnItemClickListener
 		    th.addTab(tsItems);
 		    final TabSpec tsCapacities = th.newTabSpec("capacities").setIndicator("Capacités", getResources().getDrawable(R.drawable.capacity)).setContent(R.id.Capacities);
 		    th.addTab(tsCapacities);
-		    th.setCurrentTab(0);
+		    final TabSpec tsNotes = th.newTabSpec("notes").setIndicator("Notes", getResources().getDrawable(R.drawable.pokemon)).setContent(R.id.Notes);
+			th.addTab(tsNotes);
+			
+		    th.setCurrentTab(1);
 		    th.getTabWidget().setLongClickable(true);
 		    th.getTabWidget().getChildTabViewAt(0).setOnLongClickListener(new OnLongClickListener()
 		    {
@@ -117,19 +123,56 @@ public class Sheet extends TabActivity implements OnItemClickListener
 		itemsLV.setOnItemClickListener(this);
 		capacitiesLV = (ListView) findViewById(R.id.Capacities);
 		capacitiesLV.setOnItemClickListener(this);
+		
 		DatabaseStream dbs = new DatabaseStream(this);
+		
 		items = sortList(dbs.getItems(character.getName()));
 		capacities = dbs.getCapacities(character.getName());
 		itemsLV.setAdapter(new HQAdapter(this, typeface, R.layout.row, items, "ItemOrCapacity", false, true));
 		capacitiesLV.setAdapter(new HQAdapter(this, typeface, R.layout.row, capacities, "ItemOrCapacity", false, false));
+		notes = dbs.getHeroNote(character.getName());
 		
 		dbs.close();		
+		
+		notesTV = (TextView) findViewById(R.id.Notes);
+		notesTV.setOnClickListener(this);
+		notesTV.setText(notes);
+	}
+	
+	public void onClick(View v) 
+	{
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+		alert.setTitle("Notes");
+		
+		LinearLayout ll = new LinearLayout(this);
+		ll.setOrientation(LinearLayout.VERTICAL);
+		ll.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+		final EditText etNote = new EditText(this);
+		etNote.setMinLines(notes.split("\n").length);
+		etNote.setText(notes);
+		ll.addView(etNote);
+		alert.setView(ll);
+		
+		alert.setPositiveButton("Enregistrer", new OnClickListener()
+		{
+			public void onClick(DialogInterface dialog, int which) 
+			{
+				notes = etNote.getText().toString();
+				DatabaseStream dbs = new DatabaseStream(Sheet.this);
+				dbs.modifyHeroNote(character.getName(), notes);
+				dbs.close();
+				notesTV.setText(notes);
+			}
+		});
+		
+		alert.show();
 	}
 
 	private void afficherStats() 
 	{
 		TextView nom = (TextView) findViewById(R.id.Name); nom.setText(character.getName());
-		TextView classe = (TextView) findViewById(R.id.Classe); if (character.getClasse().toString().equals("Pretre")) classe.setText("Prêtre"); else if (character.getClasse().toString().equals("Ingenieur")) classe.setText("Ingénieur"); else classe.setText(character.getClasse().toString());
+		TextView classe = (TextView) findViewById(R.id.Classe); classe.setText(character.getClasse().toString());
+		TextView race = (TextView) findViewById(R.id.Race); race.setText(character.getRace().toString());
 		TextView level = (TextView) findViewById(R.id.Level); level.setText("Level " + character.getLevel());
 		final TextView po = (TextView) findViewById(R.id.PO); po.setText(" " + character.getPo());
 		ImageView dpo = (ImageView) findViewById(R.id.dPO);
@@ -140,6 +183,7 @@ public class Sheet extends TabActivity implements OnItemClickListener
 		
 		initTypeFace(nom);
 		initTypeFace(classe);
+		initTypeFace(race);
 		initTypeFace(level);
 		initTypeFace(po);
 		initTypeFace(esprit);

@@ -54,9 +54,14 @@ public class HQAdapter extends ArrayAdapter<Object>
         	if (o != null) 
 	        {
 	        	s1 = o.getName(); // name
-	        	if (o.getClasse().toString().equals("Pretre")) s2 = "Classe : Prêtre\nEsprit : " + o.getEsprit() +"\nCorps : " + o.getCorps() + "\nPO : " + o.getPo(); // desc
-	        	else if (o.getClasse().toString().equals("Hobbit")) s2 = "Classe : Hobbit\nEsprit : " + o.getEsprit() +"\nCorps : " + o.getCorps() + "\nCourage : " + o.getCourage() + "\nPO : " + o.getPo(); // desc
-	        	else s2 = "Classe : " + o.getClasse().toString() + "\nEsprit : " + o.getEsprit() +"\nCorps : " + o.getCorps() + "\nPO : " + o.getPo(); // desc
+	        	
+	        	s2 = "Race : " + o.getRace().toString() + "\n";
+	        	if (o.getClasse().toString().equals("Hobbit")) {
+	        		s2 += "Classe : Hobbit\nEsprit : " + o.getEsprit() +"\nCorps : " + o.getCorps() + "\nCourage : " + o.getCourage() + "\nPO : " + o.getPo(); // desc
+	        	}
+	        	else {
+	        		s2 += "Classe : " + o.getClasse().toString() + "\nEsprit : " + o.getEsprit() +"\nCorps : " + o.getCorps() + "\nPO : " + o.getPo(); // desc
+	        	}
 	        	
 //	        	if (o.getNote() != "") s2 += "\nNote : " + o.getNote();
 	        	s3 = "Level " + o.getLevel(); // level
